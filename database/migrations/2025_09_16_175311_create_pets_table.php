@@ -10,16 +10,17 @@ public function up(): void
 {
     Schema::create('pets', function (Blueprint $table) {
         $table->id();
-        $table->unsignedBigInteger('user_id'); // FK pro usuário dono
-        $table->string('nome');
-        $table->string('tipo');
-        $table->integer('idade')->nullable();
+        $table->unsignedBigInteger('user_id'); // Dono do pet
+        $table->string('name');
+        $table->string('species')->nullable(); // Ex: cão, gato
+        $table->string('breed')->nullable();   // Raça
+        $table->date('birthdate')->nullable(); // Data de nascimento
         $table->timestamps();
 
+        // Relacionamento com users
         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
     });
 }
-
 
 
 public function down()

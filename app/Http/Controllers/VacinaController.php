@@ -11,7 +11,7 @@ class VacinaController extends Controller
     public function index()
     {
         $vacinas = Vacina::all(); // pega todas as vacinas do banco
-        return response()->json($vacinas); // retorna em JSON
+        return response()->json($vacinas);
     }
 
     // MOSTRAR UMA VACINA ESPECÍFICA PELO ID
