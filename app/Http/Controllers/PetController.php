@@ -60,12 +60,12 @@ class PetController extends Controller
         return response()->json($pet);
     }
 
-    // Deletar um pet
+    // Deletar um pet (soft delete automaticamente por causa do Model)
     public function destroy($id)
     {
         $pet = Pet::where('user_id', Auth::id())->findOrFail($id);
         $pet->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Pet excluído com sucesso!'], 200);
     }
 }

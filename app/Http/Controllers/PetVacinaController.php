@@ -15,19 +15,25 @@ class PetVacinaController extends Controller
     }
 
     // Cria um novo registro de vacina aplicada a um pet
-   public function store(Request $request)
+   public function store(Request $request, $pet)
 {
     $request->validate([
-        'pet_id' => 'required|exists:pets,id',
         'vacina_id' => 'required|exists:vacinas,id',
         'data_aplicacao' => 'required|date',
         'data_proxima_dose' => 'nullable|date|after_or_equal:data_aplicacao',
     ]);
 
-    $petVacina = PetVacina::create($request->all());
+    $petVacina = PetVacina::create([
+        'pet_id' => $pet, // <- vem da rota pets/{pet}/vacinas
+        'vacina_id' => $request->vacina_id,
+        'data_aplicacao' => $request->data_aplicacao,
+        'data_proxima_dose' => $request->data_proxima_dose,
+    ]);
 
     return response()->json($petVacina, 201);
 }
+
+
 
 
     // Mostra um registro específico
@@ -43,24 +49,23 @@ class PetVacinaController extends Controller
         $petVacina = PetVacina::findOrFail($id);
 
         $request->validate([
-    'pet_id' => 'sometimes|exists:pets,id',
-    'vacina_id' => 'sometimes|exists:vacinas,id',
-    'data_aplicacao' => 'sometimes|date',
-    'data_proxima_dose' => 'nullable|date|after_or_equal:data_aplicacao',
-]);
-
+            'pet_id' => 'sometimes|exists:pets,id',
+            'vacina_id' => 'sometimes|exists:vacinas,id',
+            'data_aplicacao' => 'sometimes|date',
+            'data_proxima_dose' => 'nullable|date|after_or_equal:data_aplicacao',
+        ]);
 
         $petVacina->update($request->all());
 
         return response()->json($petVacina);
     }
 
-    // Remove um registro
+    // Remove um registro (soft delete)
     public function destroy($id)
     {
         $petVacina = PetVacina::findOrFail($id);
         $petVacina->delete();
 
-        return response()->json(['message' => 'Registro removido com sucesso!']);
+        return response()->json(['message' => 'Registro removido com sucesso (soft delete)!'], 200);
     }
 }
