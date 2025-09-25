@@ -9,11 +9,17 @@ use Illuminate\Support\Facades\Auth;
 class PetController extends Controller
 {
     // Listar todos os pets do usuário autenticado
-    public function index()
-    {
-        $pets = Pet::where('user_id', Auth::id())->get();
-        return response()->json($pets);
-    }
+ public function index(Request $request)
+{
+    $limit = $request->get('limit', 10); // limite do paginate    
+    $pets = Pet::where('user_id', Auth::id())->paginate($limit);
+
+    return response()->json([
+        'count' => count($pets->items()),
+        'items' => $pets->items()
+    ]);
+}
+
 
     // Mostrar um pet específico do usuário autenticado
     public function show($id)

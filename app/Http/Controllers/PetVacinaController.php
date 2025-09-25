@@ -8,11 +8,18 @@ use Illuminate\Http\Request;
 class PetVacinaController extends Controller
 {
     // Lista todas as vacinas aplicadas (com paginação)
-    public function index()
-    {
-        $petVacinas = PetVacina::with(['pet', 'vacina'])->paginate(10);
-        return response()->json($petVacinas);
-    }
+   public function index(Request $request, $pet)
+{
+    $limit = $request->get('limit', 10);
+
+    $petVacinas = PetVacina::where('pet_id', $pet)->paginate($limit);
+
+    return response()->json([
+        'count' => count($petVacinas->items()),
+        'items' => $petVacinas->items()
+    ]);
+}
+
 
     // Cria um novo registro de vacina aplicada a um pet
    public function store(Request $request, $pet)
