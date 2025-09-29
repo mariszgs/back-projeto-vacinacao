@@ -34,5 +34,6 @@ Route::middleware('auth:sanctum')->group(function () {
     //Agendamento de vacinas 
     Route::apiResource('agendamentos-de-vacinas', AgendamentoDeVacinaController::class);
     Route::get('/agendamento-de-vacinas', [AgendamentoDeVacinaController::class, 'index']);
+    Route::delete('/agendamento-de-vacinas/{id}', [AgendamentoDeVacinaController::class, 'destroy']);
 
 });
