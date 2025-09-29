@@ -27,4 +27,9 @@ class Pet extends Model
     {
         return $this->hasMany(PetVacina::class);
     }
+    public function vacinasAplicadas()
+{
+    return $this->hasMany(\App\Models\PetVacina::class, 'pet_id');
+}
+
 }

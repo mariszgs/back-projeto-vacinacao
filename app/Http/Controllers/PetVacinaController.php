@@ -8,11 +8,16 @@ use Illuminate\Http\Request;
 class PetVacinaController extends Controller
 {
     // Lista todas as vacinas aplicadas (com paginação)
-    public function index()
-    {
-        $petVacinas = PetVacina::with(['pet', 'vacina'])->paginate(10);
-        return response()->json($petVacinas);
-    }
+    public function index($petId)
+{
+    $petVacinas = PetVacina::with('vacina')
+        ->where('pet_id', $petId)
+        ->orderBy('data_aplicacao', 'desc')
+        ->get();
+
+    return response()->json($petVacinas);
+}
+
 
     // Cria um novo registro de vacina aplicada a um pet
    public function store(Request $request, $pet)
@@ -32,8 +37,6 @@ class PetVacinaController extends Controller
 
     return response()->json($petVacina, 201);
 }
-
-
 
 
     // Mostra um registro específico

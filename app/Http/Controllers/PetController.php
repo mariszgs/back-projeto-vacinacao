@@ -17,10 +17,14 @@ class PetController extends Controller
 
     // Mostrar um pet específico do usuário autenticado
     public function show($id)
-    {
-        $pet = Pet::where('user_id', Auth::id())->findOrFail($id);
-        return response()->json($pet);
-    }
+{
+    $pet = \App\Models\Pet::with([
+        'vacinasAplicadas.vacina' // <- carrega a vacina associada a cada PetVacina
+    ])->findOrFail($id);
+
+    return response()->json($pet);
+}
+
 
     // Criar um novo pet
     public function store(Request $request)

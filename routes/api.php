@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\VacinaController;
 use App\Http\Controllers\PetVacinaController;
+use App\Http\Controllers\UserController;
 
 // Rotas públicas
 Route::post('/register', [AuthController::class, 'register']);
@@ -13,6 +14,10 @@ Route::post('/login', [AuthController::class, 'login']);
 //Rotas protegidas por Sanctum
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/user', [UserController::class, 'show']);      // Pega dados do usuário logado
+    Route::put('/user', [UserController::class, 'update']);   // Atualiza dados do usuário logado
+
     
     // Pets
     Route::apiResource('pets', PetController::class);

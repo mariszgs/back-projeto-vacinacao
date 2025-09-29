@@ -1,0 +1,507 @@
+{
+	"info": {
+		"_postman_id": "99783a62-89ac-4ffc-a0f2-8bda5397ee92",
+		"name": "Projeto Vacinação - API",
+		"description": "Aqui estão algumas explicações de comom testar pelo postman e oq cada pasta e request faz",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48506542"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Fabio\",\r\n  \"email\": \"fabio@email.com\",\r\n  \"password\": \"12345678\",\r\n  \"password_confirmation\": \"12345678\"\r\n}\r\n",	
+							"options": {	
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/regist",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"regist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"fabio@email.com\",\r\n  \"password\": \"12345678\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Register: cria um novo usuário.\n\nLogin: autentica o usuário e retorna o token de acesso."
+		},
+		{
+			"name": "Pets",
+			"item": [
+				{
+					"name": "Listar pets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/pets",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cadastrar Pet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Rex\",\r\n  \"species\": \"Cachorro\",\r\n  \"age\": 3\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/pets",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalhar Pet",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/pets/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar Pet",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Rex\",\r\n  \"species\": \"Cachorro\",\r\n  \"age\": 3\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/pets/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar Pet",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/pets/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Criar um novo pet.\n\nListar todos os pets.\n\nBuscar pet por ID, mesma coisa do delete.\n\nAtualizar informações de um pet existente, mesma coisa do delete.\n\nDeletar um pet, onde tem {id} é pq é pra colocar o id do pet que vc quer deletar."
+		},
+		{
+			"name": "Vacinas",
+			"item": [
+				{
+					"name": "Listar Vacinas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/vacinas",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"vacinas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Vacina",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/vacinas/{id}",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"vacinas",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Vacina",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"Raiva\",\r\n  \"descricao\": \"Vacina contra raiva\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/vacinas",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"vacinas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar Vacina",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"Raiva Atualizada\",\r\n  \"descricao\": \"Nova descrição\"\r\n}\r\n//exeplo",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/vacinas/{id}",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"vacinas",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar Vacina",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/vacinas/{id}",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"vacinas",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Criar uma nova vacina.\n\nListar todas as vacinas.\n\nBuscar vacina por ID,onde estiver {id} é pra colocar o id da vacina que vc quer buscar\n\nAtualizar informações de uma vacina existente, onde estiver {id} é pra colocar o id da vacina que vc quer atualizar.\n\nDeletar uma vacina, onde estiver {id} é pra colocar o id da vacina que vc quer deletar"
+		},
+		{
+			"name": "PetVacinas",
+			"item": [
+				{
+					"name": "Vacinas Aplicadas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/pet-vacinas",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pet-vacinas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Aplicação específica",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/pet-vacinas/{id}",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pet-vacinas",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Vacina para um pet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"pet_id\": 1,\r\n  \"vacina_id\": 2,\r\n  \"data_aplicacao\": \"2025-09-18\",\r\n  \"data_proxima_dose\": \"2026-09-18\"\r\n}\r\n//exelpo",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/pet-vacinas",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pet-vacinas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar registro de vacina aplicada",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"data_proxima_dose\": \"2026-01-01\"\r\n}\r\n//exemplo",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/pet-vacinas/{id}",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pet-vacinas",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar registro de vacina",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/pet-vacinas/{id}",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pet-vacinas",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints responsáveis por vincular as vacinas aos pets.\n\nRegistrar a aplicação de uma vacina em um pet.\n\nListar todas as vacinas aplicadas em um pet específico.\n\nAtualizar informações de uma vacina aplicada (ex: data).\n\nRemover o vínculo de uma vacina com um pet.\n\nonde estiver {id} na URL é pq é para trocar pelo id da respctiva vacina do pet"
+		}
+	]
+}
