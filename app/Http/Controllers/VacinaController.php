@@ -22,26 +22,26 @@ class VacinaController extends Controller
     // MOSTRAR UMA VACINA ESPECÍFICA PELO ID
     public function show($id)
     {
-        $vacina = Vacina::findOrFail($id); // se não encontrar, retorna 404
+        $vacina = Vacina::findOrFail($id);
         return response()->json($vacina);
     }
 
     // CRIAR UMA NOVA VACINA
     public function store(Request $request)
     {
-        // Validação simples
         $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
+            'validade' => 'nullable|date', // <-- agora espera data
         ]);
 
-        // Cria a vacina
         $vacina = Vacina::create([
             'nome' => $request->nome,
             'descricao' => $request->descricao,
+            'validade' => $request->validade, // <-- salva data
         ]);
 
-        return response()->json($vacina, 201); // 201 = criado com sucesso
+        return response()->json($vacina, 201);
     }
 
     // ATUALIZAR UMA VACINA EXISTENTE
@@ -49,23 +49,48 @@ class VacinaController extends Controller
     {
         $vacina = Vacina::findOrFail($id);
 
-        // Validação opcional 
         $request->validate([
             'nome' => 'sometimes|required|string|max:255',
             'descricao' => 'nullable|string',
+            'validade' => 'nullable|date', // <-- agora data também
         ]);
 
-        $vacina->update($request->only(['nome', 'descricao']));
+        $vacina->update($request->only(['nome', 'descricao', 'validade']));
 
-        return response()->json($vacina); // retorna a vacina atualizada
+        return response()->json($vacina);
     }
 
-    // DELETAR UMA VACINA
+    // DELETAR UMA VACINA (soft delete)
     public function destroy($id)
     {
         $vacina = Vacina::findOrFail($id);
         $vacina->delete();
 
-        return response()->json(null, 204); // 204 = sem conteúdo, sucesso
+        return response()->json(['message' => 'Vacina excluída com sucesso (soft delete)!'], 200);
+    }
+
+    // LISTAR VACINAS EXCLUÍDAS
+    public function deleted()
+    {
+        $vacinas = Vacina::onlyTrashed()->get();
+        return response()->json($vacinas);
+    }
+
+    // RESTAURAR VACINA
+    public function restore($id)
+    {
+        $vacina = Vacina::onlyTrashed()->findOrFail($id);
+        $vacina->restore();
+
+        return response()->json(['message' => 'Vacina restaurada com sucesso!', 'data' => $vacina]);
+    }
+
+    // EXCLUIR PERMANENTEMENTE
+    public function forceDelete($id)
+    {
+        $vacina = Vacina::onlyTrashed()->findOrFail($id);
+        $vacina->forceDelete();
+
+        return response()->json(['message' => 'Vacina excluída permanentemente!']);
     }
 }
