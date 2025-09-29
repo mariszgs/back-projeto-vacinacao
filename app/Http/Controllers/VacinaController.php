@@ -8,10 +8,15 @@ use Illuminate\Http\Request;
 class VacinaController extends Controller
 {
     // LISTAR TODAS AS VACINAS
-    public function index()
+    public function index(Request $request)
     {
-        $vacinas = Vacina::all(); // pega todas as vacinas do banco
-        return response()->json($vacinas);
+        $limit = $request->get('limit', 10);
+        $vacinas = Vacina::paginate($limit);
+
+        return response()->json([
+            'count' => count($vacinas->items()),
+            'items' => $vacinas->items()
+        ]);
     }
 
     // MOSTRAR UMA VACINA ESPECÍFICA PELO ID
