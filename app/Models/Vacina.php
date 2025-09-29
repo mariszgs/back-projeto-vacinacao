@@ -13,7 +13,7 @@ class Vacina extends Model
     protected $fillable = [
         'nome',
         'descricao',
-        'validade_dias',
+        'validade',
     ];
 
     public function petVacinas()

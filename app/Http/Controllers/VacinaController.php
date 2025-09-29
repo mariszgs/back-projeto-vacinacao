@@ -5,20 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Vacina;
 use Illuminate\Http\Request;
 
-    class VacinaController extends Controller
-    {
-        // LISTAR TODAS AS VACINAS
-      public function index(Request $request)
+class VacinaController extends Controller
 {
-    $limit = $request->get('limit', 10);
-    $vacinas = Vacina::paginate($limit);
+    // LISTAR TODAS AS VACINAS
+    public function index(Request $request)
+    {
+        $limit = $request->get('limit', 10);
+        $vacinas = Vacina::paginate($limit);
 
-    return response()->json([
-        'count' => count($vacinas->items()),
-        'items' => $vacinas->items()
-    ]);
-}
-
+        return response()->json([
+            'count' => count($vacinas->items()),
+            'items' => $vacinas->items()
+        ]);
+    }
 
     // MOSTRAR UMA VACINA ESPECÍFICA PELO ID
     public function show($id)
@@ -33,11 +32,13 @@ use Illuminate\Http\Request;
         $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
+            'validade' => 'nullable|date', // <-- agora espera data
         ]);
 
         $vacina = Vacina::create([
             'nome' => $request->nome,
             'descricao' => $request->descricao,
+            'validade' => $request->validade, // <-- salva data
         ]);
 
         return response()->json($vacina, 201);
@@ -51,9 +52,10 @@ use Illuminate\Http\Request;
         $request->validate([
             'nome' => 'sometimes|required|string|max:255',
             'descricao' => 'nullable|string',
+            'validade' => 'nullable|date', // <-- agora data também
         ]);
 
-        $vacina->update($request->only(['nome', 'descricao']));
+        $vacina->update($request->only(['nome', 'descricao', 'validade']));
 
         return response()->json($vacina);
     }

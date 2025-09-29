@@ -12,7 +12,7 @@ return new class extends Migration
     $table->id();
     $table->string('nome');
     $table->text('descricao')->nullable();
-    $table->integer('validade_dias')->nullable(); // Dias até próxima dose
+    $table->integer('validade_dias')->nullable(); 
     $table->timestamps();
 });
 
