@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\VacinaController;
 use App\Http\Controllers\PetVacinaController;
+use App\Http\Controllers\AgendamentoDeVacinaController;
 
 // Rotas públicas
 Route::post('/register', [AuthController::class, 'register']);
@@ -30,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/pets/{id}/restore', [PetController::class, 'restore']); // restaurar
     Route::delete('/pets/{id}/force', [PetController::class, 'forceDelete']); // excluir de vez
 
-
+    //Agendamento de vacinas 
+    Route::apiResource('agendamentos-de-vacinas', AgendamentoDeVacinaController::class);
+    Route::get('/agendamento-de-vacinas', [AgendamentoDeVacinaController::class, 'index']);
 
 });
