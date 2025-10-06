@@ -7,19 +7,15 @@ use Illuminate\Http\Request;
 
 class PetVacinaController extends Controller
 {
-
-    // Lista todas as vacinas aplicadas com paginação
-   public function index(Request $request, $pet)
+    // Lista todas as vacinas aplicadas (com paginação)
+    public function index($petId)
 {
-    $limit = $request->get('limit', 10);
+    $petVacinas = PetVacina::with('vacina')
+        ->where('pet_id', $petId)
+        ->orderBy('data_aplicacao', 'desc')
+        ->get();
 
-    $petVacinas = PetVacina::where('pet_id', $pet)->paginate($limit);
-
-    return response()->json([
-        'count' => count($petVacinas->items()),
-        'items' => $petVacinas->items()
-    ]);
-
+    return response()->json($petVacinas);
 }
 
 
@@ -33,7 +29,7 @@ class PetVacinaController extends Controller
     ]);
 
     $petVacina = PetVacina::create([
-        'pet_id' => $pet, //vem da rota pets/{pet}/vacinas
+        'pet_id' => $pet, // <- vem da rota pets/{pet}/vacinas
         'vacina_id' => $request->vacina_id,
         'data_aplicacao' => $request->data_aplicacao,
         'data_proxima_dose' => $request->data_proxima_dose,

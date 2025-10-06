@@ -42,7 +42,7 @@ class VacinaController extends Controller
         ]);
 
         return response()->json($vacina, 201);
-    }
+}
 
     // ATUALIZAR UMA VACINA EXISTENTE
     public function update(Request $request, $id)

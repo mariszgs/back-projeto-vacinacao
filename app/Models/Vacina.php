@@ -9,7 +9,7 @@ class Vacina extends Model
 {
 
     use SoftDeletes; 
-    
+
     protected $fillable = [
         'nome',
         'descricao',
