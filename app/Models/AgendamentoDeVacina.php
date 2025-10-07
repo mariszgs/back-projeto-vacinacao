@@ -20,6 +20,8 @@ class AgendamentoDeVacina extends Model
         'observacoes',
     ];
 
+    protected $appends = ['vacina_nome'];
+
     public function pet()
     {
         return $this->belongsTo(Pet::class);
@@ -29,4 +31,10 @@ class AgendamentoDeVacina extends Model
     {
         return $this->belongsTo(Vacina::class);
     }
+
+    public function getVacinaNomeAttribute()
+    {
+        return $this->vacina ? $this->vacina->nome : null;
+    }
 }
+

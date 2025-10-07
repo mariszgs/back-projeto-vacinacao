@@ -11,29 +11,29 @@ use App\Http\Controllers\AgendamentoDeVacinaController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-//Rotas protegidas por Sanctum
+// Rotas protegidas por Sanctum
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     
     // Pets
     Route::apiResource('pets', PetController::class);
-
+    
     // Vacinas
     Route::apiResource('vacinas', VacinaController::class);
-
+    
     // Vacinas aplicadas em Pets
     Route::get('pets/{pet}/vacinas', [PetVacinaController::class, 'index']);
     Route::post('pets/{pet}/vacinas', [PetVacinaController::class, 'store']);
-    Route::delete('petvacinas/{id}', [PetVacinaController::class, 'destroy']);      
+    Route::delete('/petvacinas/{id}', [PetVacinaController::class, 'destroy']);      
 
-    // Pets
-    Route::get('/pets/deleted', [PetController::class, 'deleted']);   // listar excluídos
-    Route::patch('/pets/{id}/restore', [PetController::class, 'restore']); // restaurar
-    Route::delete('/pets/{id}/force', [PetController::class, 'forceDelete']); // excluir de vez
+    // Pets excluídos
+    Route::get('/pets/deleted', [PetController::class, 'deleted']);
+    Route::patch('/pets/{id}/restore', [PetController::class, 'restore']);
+    Route::delete('/pets/{id}/force', [PetController::class, 'forceDelete']);
 
-    //Agendamento de vacinas 
-    Route::apiResource('agendamentos-de-vacinas', AgendamentoDeVacinaController::class);
-    Route::get('/agendamento-de-vacinas', [AgendamentoDeVacinaController::class, 'index']);
-    Route::delete('/agendamento-de-vacinas/{id}', [AgendamentoDeVacinaController::class, 'destroy']);
+    // Agendamento de vacinas - rota específica deve vir antes
+    Route::get('/agendamentos-de-vacinas/relatorio-atrasadas', [AgendamentoDeVacinaController::class, 'relatorioAtrasadas']);
 
+    // Agendamento de vacinas - rotas RESTful
+    Route::apiResource('agendamento-de-vacinas', AgendamentoDeVacinaController::class);
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AgendamentoDeVacina;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AgendamentoDeVacinaController extends Controller
 {
@@ -59,4 +60,17 @@ class AgendamentoDeVacinaController extends Controller
 
         return response()->json(null, 204);
     }
+
+public function relatorioAtrasadas()
+{
+    $agendamentos = AgendamentoDeVacina::where('data_agendada', '<', now())
+        ->where('status', 'pendente') // apenas os que ainda não foram realizados
+        ->with(['pet', 'vacina'])
+        ->get();
+
+    return response()->json([
+        'total_atrasados' => $agendamentos->count(),
+        'agendamentos' => $agendamentos
+    ]);
+}
 }
