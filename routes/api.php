@@ -5,11 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\VacinaController;
 use App\Http\Controllers\PetVacinaController;
-<<<<<<< HEAD
-use App\Http\Controllers\UserController;
-=======
 use App\Http\Controllers\AgendamentoDeVacinaController;
->>>>>>> upstream/main
+use App\Http\Controllers\UserController;
 
 // Rotas públicas
 Route::post('/register', [AuthController::class, 'register']);
