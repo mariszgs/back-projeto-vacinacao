@@ -23,14 +23,15 @@ class AgendamentoDeVacina extends Model
     protected $appends = ['vacina_nome'];
 
     public function pet()
-    {
-        return $this->belongsTo(Pet::class);
-    }
+{
+    return $this->belongsTo(\App\Models\Pet::class);
+}
 
-    public function vacina()
-    {
-        return $this->belongsTo(Vacina::class);
-    }
+public function vacina()
+{
+    return $this->belongsTo(\App\Models\Vacina::class);
+}
+
 
     public function getVacinaNomeAttribute()
     {
