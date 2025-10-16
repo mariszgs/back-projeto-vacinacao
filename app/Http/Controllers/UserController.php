@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -26,24 +28,45 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
-        //
+     return response()->json(Auth::user());
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    //atualizar usuario
+      public function update(Request $request)
     {
-        //
+        $user = $request->user(); // usuário logado
+
+        $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+            'password' => 'sometimes|min:6|confirmed',
+        ]);
+        if ($request->has('name')){
+            $user->name = $request->name;
+        }
+        if ($request->has('email')){
+            $user->email = $request->email;
+        }
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+        
+        $user->save();
+
+       return response()->json(['message' => 'Usuário atualizado com sucesso!', 'user' => $user]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+   
+    public function destroy()
+{
+    /** @var \App\Models\User $user */
+    $user = Auth::user();
+    $user->delete();
+
+    return response()->json(['message' => 'Conta excluída com sucesso!']);
+}
+
+
 }

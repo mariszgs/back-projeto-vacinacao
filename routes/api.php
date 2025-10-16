@@ -6,6 +6,7 @@ use App\Http\Controllers\PetController;
 use App\Http\Controllers\VacinaController;
 use App\Http\Controllers\PetVacinaController;
 use App\Http\Controllers\AgendamentoDeVacinaController;
+use App\Http\Controllers\UserController;
 
 // Rotas públicas
 Route::post('/register', [AuthController::class, 'register']);
@@ -14,6 +15,13 @@ Route::post('/login', [AuthController::class, 'login']);
 // Rotas protegidas por Sanctum
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    // Usuário autenticado
+Route::put('/usuario', [UserController::class, 'update']);
+// Usuário autenticado
+Route::get('/usuario', [UserController::class, 'show']);     // Ver dados
+Route::put('/usuario', [UserController::class, 'update']);   // Atualizar dados
+Route::delete('/usuario', [UserController::class, 'destroy']); // Excluir conta
+
     
     // Pets
     Route::apiResource('pets', PetController::class);
