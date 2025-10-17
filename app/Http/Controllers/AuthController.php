@@ -24,7 +24,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json(['message' => 'Usuário registrado com sucesso!'], 201);
+        return response()->json(['message' => 'Usuário registrado!'], 201);
     }
 
     // Login
@@ -58,6 +58,6 @@ class AuthController extends Controller
         // Revoga o token atual
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logout realizado com sucesso!']);
+        return response()->json(['message' => 'Logout realizado!']);
     }
 }

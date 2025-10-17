@@ -25,11 +25,10 @@ class PetController extends Controller
    public function show($id)
 {
     $pet = Pet::with([
-        'vacinasAplicadas.vacina', // relacionamento com as vacinas já aplicadas
-        'agendamentos.vacina'      // relacionamento com as vacinas agendadas
+        'petVacinas.vacina', // relacionamento 
+        'agendamentos.vacina'      // relacionamento
     ])
-    ->where('user_id', Auth::id())
-    ->findOrFail($id);
+    ->where('user_id', Auth::id())->findOrFail($id);
 
     return response()->json([
         'id' => $pet->id,
@@ -37,7 +36,7 @@ class PetController extends Controller
         'species' => $pet->species,
         'breed' => $pet->breed,
         'birthdate' => $pet->birthdate,
-        'vacinas_aplicadas' => $pet->vacinasAplicadas,
+        'vacinas_aplicadas' => $pet->petVacinas,
         'vacinas_agendadas' => $pet->agendamentos
     ]);
 }
@@ -81,12 +80,12 @@ class PetController extends Controller
         return response()->json($pet);
     }
 
-    // Deletar um pet (soft delete automaticamente por causa do Model)
+    // Deletar um pet, soft delete automaticamente por causa do Model
     public function destroy($id)
     {
         $pet = Pet::where('user_id', Auth::id())->findOrFail($id);
         $pet->delete();
 
-        return response()->json(['message' => 'Pet excluído com sucesso!'], 200);
+        return response()->json(['message' => 'Pet deletado!'], 200);
     }
 }

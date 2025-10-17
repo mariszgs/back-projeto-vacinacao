@@ -26,7 +26,8 @@ class VacinaController extends Controller
         return response()->json($vacina);
     }
 
-    // CRIAR UMA NOVA VACINA
+    // CRIAR UMA NOVA VACINA 
+      
     public function store(Request $request)
     {
         $request->validate([
@@ -66,7 +67,7 @@ class VacinaController extends Controller
         $vacina = Vacina::findOrFail($id);
         $vacina->delete();
 
-        return response()->json(['message' => 'Vacina excluída com sucesso (soft delete)!'], 200);
+        return response()->json(['message' => 'Vacina excluída (soft delete)!'], 200);
     }
 
     // LISTAR VACINAS EXCLUÍDAS
@@ -82,7 +83,7 @@ class VacinaController extends Controller
         $vacina = Vacina::onlyTrashed()->findOrFail($id);
         $vacina->restore();
 
-        return response()->json(['message' => 'Vacina restaurada com sucesso!', 'data' => $vacina]);
+        return response()->json(['message' => 'Vacina restaurada!', 'data' => $vacina]);
     }
 
     // EXCLUIR PERMANENTEMENTE

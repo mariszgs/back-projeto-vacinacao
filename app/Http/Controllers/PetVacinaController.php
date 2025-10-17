@@ -47,7 +47,7 @@ public function index(Request $request, $pet)
     ]);
 
     $petVacina = PetVacina::create([
-        'pet_id' => $pet, //vem da rota pets/{pet}/vacinas
+        'pet_id' => $pet, 
         'vacina_id' => $request->vacina_id,
         'data_aplicacao' => $request->data_aplicacao,
         'data_proxima_dose' => $request->data_proxima_dose,
@@ -58,7 +58,7 @@ public function index(Request $request, $pet)
 
 
 
-
+    
     // Mostra um registro específico
     public function show($id)
     {
@@ -89,6 +89,6 @@ public function index(Request $request, $pet)
         $petVacina = PetVacina::findOrFail($id);
         $petVacina->delete();
 
-        return response()->json(['message' => 'Registro removido com sucesso (soft delete)!'], 200);
+        return response()->json(['message' => 'Registro removido (soft delete)!'], 200);
     }
 }
