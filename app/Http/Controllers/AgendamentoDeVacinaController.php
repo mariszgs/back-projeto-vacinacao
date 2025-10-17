@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 
 class AgendamentoDeVacinaController extends Controller
 {
-    public function index()
-    {
-        return AgendamentoDeVacina::with(['pet', 'vacina'])->get();
-    }
+ public function index(Request $request)
+{
+    $perPage = $request->query('per_page', 10); // padrão 10 se não enviado
+    return AgendamentoDeVacina::with(['pet', 'vacina'])->paginate($perPage);
+}
+
 
     public function store(Request $request)
     {
