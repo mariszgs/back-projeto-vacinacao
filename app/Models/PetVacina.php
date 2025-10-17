@@ -9,24 +9,18 @@ class PetVacina extends Model
 {
     use SoftDeletes;
 
-     protected $fillable = [
-        'user_id',
-        'name',
-        'species',
-        'breed',
-        'birthdate',
+    protected $fillable = [
+        'pet_id', 'vacina_id', 'data_aplicacao', 'data_proxima_dose',
     ];
 
-    // Vacinas já aplicadas
-    public function vacinasAplicadas()
+    public function pet()
     {
-        return $this->hasMany(Vacina::class);
+        return $this->belongsTo(\App\Models\Pet::class);
     }
 
-    // Vacinas agendadas (a tomar)
-    public function agendamentos()
+    public function vacina()
     {
-        return $this->hasMany(AgendamentoDeVacina::class);
+        return $this->belongsTo(\App\Models\Vacina::class);
     }
 }
 

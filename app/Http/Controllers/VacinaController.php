@@ -33,13 +33,13 @@ class VacinaController extends Controller
         $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'nullable|string',
-            'validade' => 'nullable|date', // <-- agora espera data
+            'validade' => 'nullable|date', // agora espera data
         ]);
 
         $vacina = Vacina::create([
             'nome' => $request->nome,
             'descricao' => $request->descricao,
-            'validade' => $request->validade, // <-- salva data
+            'validade' => $request->validade, // salva data
         ]);
 
         return response()->json($vacina, 201);
@@ -53,7 +53,7 @@ class VacinaController extends Controller
         $request->validate([
             'nome' => 'sometimes|required|string|max:255',
             'descricao' => 'nullable|string',
-            'validade' => 'nullable|date', // <-- agora data também
+            'validade' => 'nullable|date', // agora data também
         ]);
 
         $vacina->update($request->only(['nome', 'descricao', 'validade']));
