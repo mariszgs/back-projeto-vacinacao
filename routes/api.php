@@ -15,8 +15,7 @@ Route::post('/login', [AuthController::class, 'login']);
 // Rotas protegidas por Sanctum
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    // Usuário autenticado
-Route::put('/usuario', [UserController::class, 'update']);
+
 // Usuário autenticado
 Route::get('/usuario', [UserController::class, 'show']);     // Ver dados
 Route::put('/usuario', [UserController::class, 'update']);   // Atualizar dados
