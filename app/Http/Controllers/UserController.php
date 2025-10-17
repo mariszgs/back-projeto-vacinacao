@@ -55,7 +55,7 @@ class UserController extends Controller
         
         $user->save();
 
-       return response()->json(['message' => 'Usuário atualizado com sucesso!', 'user' => $user]);
+       return response()->json(['message' => 'Usuário atualizado!', 'user' => $user]);
     }
 
    
@@ -65,7 +65,7 @@ class UserController extends Controller
     $user = Auth::user();
     $user->delete();
 
-    return response()->json(['message' => 'Conta excluída com sucesso!']);
+    return response()->json(['message' => 'Conta excluída!']);
 }
 
 
