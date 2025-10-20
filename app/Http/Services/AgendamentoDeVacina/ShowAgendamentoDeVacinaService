@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Services\AgendamentoDeVacina;
+
+use App\Models\AgendamentoDeVacina;
+
+class ShowAgendamentoDeVacinaService
+{
+    public function run(int $id)
+    {
+        return AgendamentoDeVacina::with(['pet', 'vacina'])->findOrFail($id);
+    }
+}

@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Services\AgendamentoDeVacina;
+
+use App\Models\AgendamentoDeVacina;
+
+class DeleteAgendamentoDeVacinaService
+{
+    public function run(int $id)
+    {
+        $agendamento = AgendamentoDeVacina::findOrFail($id);
+        $agendamento->delete();
+    }
+}
