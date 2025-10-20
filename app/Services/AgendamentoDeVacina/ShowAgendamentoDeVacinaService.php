@@ -6,8 +6,9 @@ use App\Models\AgendamentoDeVacina;
 
 class ShowAgendamentoDeVacinaService
 {
-    public function run(int $id)
-    {
-        return AgendamentoDeVacina::with(['pet', 'vacina'])->findOrFail($id);
-    }
+   public function run(AgendamentoDeVacina $agendamento)
+{
+    return $agendamento->load(['pet', 'vacina']);
+}
+
 }

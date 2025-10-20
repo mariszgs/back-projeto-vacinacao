@@ -15,12 +15,12 @@ Route::post('/login', [AuthController::class, 'login']);
     // Rotas protegidas por Sanctum
     Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    
     // Usuário autenticado
     Route::get('/usuario', [UserController::class, 'show']);     // Ver dados
     Route::put('/usuario', [UserController::class, 'update']);   // Atualizar dados
     Route::delete('/usuario', [UserController::class, 'destroy']); // Excluir conta
 
-    
     // Pets
     Route::apiResource('pets', PetController::class);
     
@@ -39,6 +39,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
     // Agendamento de vacinas - rota específica deve vir antes
     Route::get('/agendamentos-de-vacinas/relatorio-atrasadas', [AgendamentoDeVacinaController::class, 'relatorioAtrasadas']);
+Route::get('/agendamento-de-vacinas/{agendamento}', [AgendamentoDeVacinaController::class, 'show']);
+Route::put('/agendamento-de-vacinas/{agendamento}', [AgendamentoDeVacinaController::class, 'update']);
+Route::delete('/agendamento-de-vacinas/{agendamento}', [AgendamentoDeVacinaController::class, 'destroy']);
 
     // Agendamento de vacinas - rotas RESTful
     Route::apiResource('agendamento-de-vacinas', AgendamentoDeVacinaController::class);

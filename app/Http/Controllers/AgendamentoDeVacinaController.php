@@ -17,7 +17,7 @@ use App\Models\AgendamentoDeVacina;
 
 class AgendamentoDeVacinaController extends Controller
 {
-    public function store(StoreAgendamentoDeVacinaRequest $request, StoreAgendamentoDeVacinaService $service)
+     public function store(StoreAgendamentoDeVacinaRequest $request, StoreAgendamentoDeVacinaService $service)
     {
         $data = $request->validated();
         $agendamento = $service->run($data);
@@ -31,27 +31,30 @@ class AgendamentoDeVacinaController extends Controller
         return AgendamentoDeVacinaResource::collection($agendamentos);
     }
 
-    public function show(ShowAgendamentoDeVacinaService $service, $id)
+
+
+public function show(ShowAgendamentoDeVacinaService $service, AgendamentoDeVacina $agendamento_de_vacina)
 {
-    $agendamento = $service->run($id);
+    $agendamento = $service->run($agendamento_de_vacina);
     return new AgendamentoDeVacinaResource($agendamento);
 }
 
-
- public function update(UpdateAgendamentoDeVacinaRequest $request, UpdateAgendamentoDeVacinaService $service, $id)
+public function update(UpdateAgendamentoDeVacinaRequest $request, UpdateAgendamentoDeVacinaService $service, AgendamentoDeVacina $agendamento_de_vacina)
 {
-    $agendamento = AgendamentoDeVacina::findOrFail($id);
     $data = $request->validated();
-    $agendamento = $service->run($data, $agendamento);
-
+    $agendamento = $service->run($data, $agendamento_de_vacina);
+    $agendamento->load('pet', 'vacina');
     return new AgendamentoDeVacinaResource($agendamento);
 }
 
-    public function destroy(DeleteAgendamentoDeVacinaService $service, $id)
+
+
+public function destroy(DeleteAgendamentoDeVacinaService $service, AgendamentoDeVacina $agendamento_de_vacina)
 {
-    $service->run($id);
+    $service->run($agendamento_de_vacina);
     return response()->json(null, 204);
 }
+
 
 public function relatorioAtrasadas(RelatorioAtrasadasService $service)
 {

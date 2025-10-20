@@ -9,6 +9,6 @@ class UpdateAgendamentoDeVacinaService
     public function run(array $data, AgendamentoDeVacina $agendamento)
     {
         $agendamento->update($data);
-        return $agendamento;
+        return $agendamento->refresh();
     }
 }

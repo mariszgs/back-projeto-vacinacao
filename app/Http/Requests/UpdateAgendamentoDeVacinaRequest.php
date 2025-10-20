@@ -11,12 +11,13 @@ class UpdateAgendamentoDeVacinaRequest extends FormRequest
         return true;
     }
 
-    public function rules()
-    {
-        return [
-            'data_agendada' => 'sometimes|date|after:now',
-            'status' => 'sometimes|in:pendente,concluído,cancelado',
-            'observacoes' => 'nullable|string',
-        ];
-    }
+    public function rules(): array
+{
+    return [
+        'data_agendada' => 'sometimes|date|after:now',
+        'status' => 'sometimes|in:pendente,concluído,cancelado',
+        'observacoes' => 'nullable|string',
+    ];
+}
+
 }
