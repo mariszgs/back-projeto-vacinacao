@@ -1,7 +1,7 @@
 <?php
 
-// app/Http/Requests/UpdateVacinaRequest.php
-namespace App\Http\Requests;
+
+namespace App\Http\Requests\Vacinas;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -15,9 +15,9 @@ class UpdateVacinaRequest extends FormRequest
     public function rules()
     {
         return [
-            'nome' => 'sometimes|required|string|max:255',
-            'descricao' => 'nullable|string',
-            'validade' => 'nullable|date',
+            'nome' => ['sometimes','required','string'],
+            'descricao' => ['nullable','string'],
+            'validade' => ['required','date'],
         ];
     }
 }

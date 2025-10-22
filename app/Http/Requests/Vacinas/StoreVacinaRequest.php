@@ -14,9 +14,9 @@ class StoreVacinaRequest extends FormRequest
     public function rules()
     {
         return [
-            'nome' => 'required|string',
-            'descricao' => 'nullable|string',
-            'validade' => 'required|date',
+            'nome' => ['required','string'],
+            'descricao' => ['nullable','string'],
+            'validade' => ['required','date'],
         ];
     }
 }
