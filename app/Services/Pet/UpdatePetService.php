@@ -5,14 +5,16 @@ namespace App\Services\Pet;
 use App\Models\Pet;
 use Illuminate\Support\Facades\Auth;
 
-class DeletePetService
+class UpdatePetService
 {
-    public function run(Pet $pet): void
+    public function run(array $data, Pet $pet): Pet
     {
         if ($pet->user_id !== Auth::id()) {
             abort(403, 'Acesso não autorizado.');
         }
 
-        $pet->delete();
+        $pet->update($data);
+
+        return $pet;
     }
 }

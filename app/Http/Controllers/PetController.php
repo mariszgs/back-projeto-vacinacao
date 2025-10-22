@@ -2,90 +2,52 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Pet\StorePetRequest;
+use App\Http\Requests\Pet\UpdatePetRequest;
+use App\Http\Resources\PetResource;
 use App\Models\Pet;
+use App\Services\Pet\IndexPetService;
+use App\Services\Pet\ShowPetService;
+use App\Services\Pet\StorePetService;
+use App\Services\Pet\UpdatePetService;
+use App\Services\Pet\DeletePetService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class PetController extends Controller
 {
-    // Listar todos os pets do usuário autenticado
- public function index(Request $request)
+  public function index(IndexPetService $service, Request $request)
 {
-    $limit = $request->get('limit', 10); // limite do paginate    
-    $pets = Pet::where('user_id', Auth::id())->paginate($limit);
-
-    return response()->json([
-        'count' => count($pets->items()),
-        'items' => $pets->items()
-    ]);
+    $pets = $service->run($request);
+    return PetResource::collection($pets);
 }
 
 
-    // Mostrar um pet específico do usuário autenticado
-   public function show($id)
-{
-    $pet = Pet::with([
-        'petVacinas.vacina', // relacionamento 
-        'agendamentos.vacina'      // relacionamento
-    ])
-    ->where('user_id', Auth::id())->findOrFail($id);
+    public function show(Pet $pet, ShowPetService $service)
+    {
+        $pet = $service->run($pet);
+        return new PetResource ($pet);
+    }
 
-    return response()->json([
-        'id' => $pet->id,
-        'name' => $pet->name,
-        'species' => $pet->species,
-        'breed' => $pet->breed,
-        'birthdate' => $pet->birthdate,
-        'vacinas_aplicadas' => $pet->petVacinas,
-        'vacinas_agendadas' => $pet->agendamentos
-    ]);
+    public function store(StorePetRequest $request, StorePetService $service)
+{
+    dd('chegou no controller');
+    
+    $data = $request->validated();
+    $pet = $service->run($data);
+    return response(new PetResource($pet), 201);
 }
 
 
-    // Criar um novo pet
-    public function store(Request $request)
+    public function update(UpdatePetRequest $request, Pet $pet, UpdatePetService $service)
     {
-        $request->validate([
-            'name'      => 'required|string|max:255',
-            'species'   => 'nullable|string|max:100',
-            'breed'     => 'nullable|string|max:100',
-            'birthdate' => 'nullable|date',
-        ]);
-
-        $pet = Pet::create([
-            'user_id'   => Auth::id(),
-            'name'      => $request->name,
-            'species'   => $request->species,
-            'breed'     => $request->breed,
-            'birthdate' => $request->birthdate,
-        ]);
-
-        return response()->json($pet, 201);
+        $data = $request->validated();
+        $pet = $service->run($data, $pet);
+        return new PetResource($pet);
     }
 
-    // Atualizar um pet existente
-    public function update(Request $request, $id)
+    public function destroy(Pet $pet, DeletePetService $service)
     {
-        $pet = Pet::where('user_id', Auth::id())->findOrFail($id);
-
-        $request->validate([
-            'name'      => 'sometimes|required|string|max:255',
-            'species'   => 'nullable|string|max:100',
-            'breed'     => 'nullable|string|max:100',
-            'birthdate' => 'nullable|date',
-        ]);
-
-        $pet->update($request->only(['name', 'species', 'breed', 'birthdate']));
-
-        return response()->json($pet);
-    }
-
-    // Deletar um pet, soft delete automaticamente por causa do Model
-    public function destroy($id)
-    {
-        $pet = Pet::where('user_id', Auth::id())->findOrFail($id);
-        $pet->delete();
-
+        $service->run($pet);
         return response()->json(['message' => 'Pet deletado!'], 200);
     }
 }
