@@ -2,67 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterAuthRequest;
+use App\Services\Auth\LoginService;
+use App\Services\Auth\LogoutService;
+use App\Services\Auth\RegisterService;
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // Registro
-   public function register(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|unique:users,email',
-        'password' => 'required|string|min:6|confirmed',
-    ]);
+    public function register(RegisterAuthRequest $request, RegisterService $service)
+    {
+        // O RegisterRequest já valida os dados
+        $data = $request->validated();
 
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-    ]);
+        // O service executa o registro e retorna resposta pronta (array ou JsonResponse)
+        $response = $service->run($data);
 
-    $token = $user->createToken('auth_token')->plainTextToken;
-
-    return response()->json([
-        'user' => $user,
-        'access_token' => $token,
-        'token_type' => 'Bearer',
-    ], 201);
-}
-
-
-    // Login
-    public function login(Request $request)
-{
-    $request->validate([
-        'email' => 'required|string|email',
-        'password' => 'required|string',
-    ]);
-
-    $user = User::where('email', $request->email)->first();
-
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        return response()->json(['message' => 'Credenciais inválidas.'], 401);
+        // Só devolvemos a resposta
+        return response()->json($response, 201);
     }
 
-    $token = $user->createToken('auth_token')->plainTextToken;
-
-    return response()->json([
-        'access_token' => $token,
-        'token_type' => 'Bearer',
-    ]);
-}
-
-
-    // Logout
-    public function logout(Request $request)
+    public function login(LoginRequest $request, LoginService $service)
     {
-        // Revoga o token atual
-        $request->user()->currentAccessToken()->delete();
+        $data = $request->validated();
 
-        return response()->json(['message' => 'Logout realizado!']);
+        $response = $service->run($data);
+
+        return response()->json($response);
+    }
+
+    public function logout(Request $request, LogoutService $service)
+    {
+        $response = $service->run($request);
+
+        return response()->json($response);
     }
 }
