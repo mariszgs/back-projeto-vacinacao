@@ -8,29 +8,35 @@ use Illuminate\Support\Facades\Auth;
 
 class PetController extends Controller
 {
-    // Listar todos os pets do usuário autenticado
- public function index(Request $request)
-{
-    $limit = $request->get('limit', 10); // limite do paginate    
-    $pets = Pet::where('user_id', Auth::id())->paginate($limit);
+    // Listar todos os pets
+    public function index(Request $request)
+    {
+        $limit = $request->get('limit', 10); // limite do paginate
+        $pets = Pet::paginate($limit);
 
-    return response()->json([
-        'count' => count($pets->items()),
-        'items' => $pets->items()
-    ]);
-}
+        return response()->json([
+            'count' => count($pets->items()),
+            'items' => $pets->items()
+        ]);
+    }
 
-
-    // Mostrar um pet específico do usuário autenticado
+    // Mostrar um pet específico
     public function show($id)
-{
-    $pet = \App\Models\Pet::with([
-        'vacinasAplicadas.vacina' // <- carrega a vacina associada a cada PetVacina
-    ])->findOrFail($id);
+    {
+        $pet = Pet::with([
+            'vacinasAplicadas.vacina', // vacinas aplicadas
+            'agendamentos.vacina'      // vacinas a tomar / agendadas
+        ])->findOrFail($id);
 
-    return response()->json($pet);
-}
-
+        return response()->json([
+            'id' => $pet->id,
+            'name' => $pet->name,
+            'species' => $pet->species,
+            'birthdate' => $pet->birthdate,
+            'vacinas_aplicadas' => $pet->vacinasAplicadas,
+            'vacinas_agendadas' => $pet->agendamentos
+        ]);
+    }
 
     // Criar um novo pet
     public function store(Request $request)
@@ -56,7 +62,7 @@ class PetController extends Controller
     // Atualizar um pet existente
     public function update(Request $request, $id)
     {
-        $pet = Pet::where('user_id', Auth::id())->findOrFail($id);
+        $pet = Pet::findOrFail($id); // removido filtro pelo user_id
 
         $request->validate([
             'name'      => 'sometimes|required|string|max:255',
@@ -70,10 +76,10 @@ class PetController extends Controller
         return response()->json($pet);
     }
 
-    // Deletar um pet (soft delete automaticamente por causa do Model)
+    // Deletar um pet
     public function destroy($id)
     {
-        $pet = Pet::where('user_id', Auth::id())->findOrFail($id);
+        $pet = Pet::findOrFail($id); // removido filtro pelo user_id
         $pet->delete();
 
         return response()->json(['message' => 'Pet excluído com sucesso!'], 200);

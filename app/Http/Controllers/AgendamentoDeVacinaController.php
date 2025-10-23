@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class AgendamentoDeVacinaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return AgendamentoDeVacina::with(['pet', 'vacina'])->get();
-    }
-
+    $perPage = $request->query('per_page', 10); // padrão 10 se não enviado
+    return AgendamentoDeVacina::with(['pet', 'vacina'])->paginate($perPage);
+  }
+  
     public function store(Request $request)
     {
         $request->validate([

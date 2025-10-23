@@ -10,18 +10,16 @@ class PetVacinaController extends Controller
 
     // Lista todas as vacinas aplicadas com paginação
 public function index(Request $request, $pet)
-
 {
-    $petVacinas = PetVacina::with('vacina')
-        ->where('pet_id', $petId)
-        ->orderBy('data_aplicacao', 'desc')
-        ->get();
+    $limit = $request->input('limit', 10); // define limite de paginação
 
-    $petVacinas = PetVacina::with('vacina:id,nome')
+    $petVacinas = PetVacina::with('vacina')
         ->where('pet_id', $pet)
+        ->orderBy('data_aplicacao', 'desc')
         ->paginate($limit);
 
-    $items = collect($petVacinas->items())->map(function ($item) {
+    // transforma os itens direto
+    $items = $petVacinas->getCollection()->transform(function ($item) {
         return [
             'id' => $item->id,
             'pet_id' => $item->pet_id,
@@ -31,6 +29,7 @@ public function index(Request $request, $pet)
         ];
     });
 
+    // retorna a resposta mantendo a paginação
     return response()->json([
         'count' => $items->count(),
         'items' => $items,
@@ -39,6 +38,7 @@ public function index(Request $request, $pet)
         'last_page' => $petVacinas->lastPage(),
     ]);
 }
+
 
 
 
