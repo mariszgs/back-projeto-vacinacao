@@ -27,14 +27,10 @@ class Pet extends Model
     {
         return $this->hasMany(PetVacina::class);
     }
-    public function vacinasAplicadas()
-{
-    return $this->hasMany(\App\Models\PetVacina::class, 'pet_id');
-}
+
     public function agendamentos()
 {
-    return $this->hasMany(AgendamentoDeVacina::class); // ou o nome do model correto
+    return $this->hasMany(AgendamentoDeVacina::class);
 }
-
 
 }

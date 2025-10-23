@@ -2,76 +2,68 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AgendamentoDeVacina;
+
+use App\Http\Requests\StoreAgendamentoDeVacinaRequest;
+use App\Http\Requests\UpdateAgendamentoDeVacinaRequest;
+use App\Http\Resources\AgendamentoDeVacinaResource;
+use App\Services\AgendamentoDeVacina\StoreAgendamentoDeVacinaService;
+use App\Services\AgendamentoDeVacina\IndexAgendamentoDeVacinaService;
+use App\Services\AgendamentoDeVacina\UpdateAgendamentoDeVacinaService;
+use App\Services\AgendamentoDeVacina\DeleteAgendamentoDeVacinaService;
+use App\Services\AgendamentoDeVacina\ShowAgendamentoDeVacinaService;
+use App\Services\AgendamentoDeVacina\RelatorioAtrasadasService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\AgendamentoDeVacina;
 
 class AgendamentoDeVacinaController extends Controller
 {
-    public function index(Request $request)
+     public function store(StoreAgendamentoDeVacinaRequest $request, StoreAgendamentoDeVacinaService $service)
     {
-    $perPage = $request->query('per_page', 10); // padrão 10 se não enviado
-    return AgendamentoDeVacina::with(['pet', 'vacina'])->paginate($perPage);
-  }
-  
-    public function store(Request $request)
-    {
-        $request->validate([
-            'pet_id' => 'required|exists:pets,id',
-            'vacina_id' => 'required|exists:vacinas,id',
-            'data_agendada' => 'required|date|after:now',
-            'observacoes' => 'nullable|string',
-        ]);
-
-        $agendamento = AgendamentoDeVacina::create([
-            'pet_id' => $request->pet_id,
-            'vacina_id' => $request->vacina_id,
-            'data_agendada' => $request->data_agendada,
-            'status' => 'pendente',
-            'observacoes' => $request->observacoes,
-        ]);
-
-        return response()->json($agendamento, 201);
+        $data = $request->validated();
+        $agendamento = $service->run($data);
+        return response(new AgendamentoDeVacinaResource($agendamento), 201);
     }
 
-    public function show($id)
+   
+    public function index(IndexAgendamentoDeVacinaService $service, Request $request)
+
     {
-        return AgendamentoDeVacina::with(['pet', 'vacina'])->findOrFail($id);
+        $agendamentos = $service->run($request);
+        return AgendamentoDeVacinaResource::collection($agendamentos);
     }
 
-    public function update(Request $request, $id)
-    {
-        $agendamento = AgendamentoDeVacina::findOrFail($id);
 
-        $request->validate([
-            'data_agendada' => 'sometimes|date|after:now',
-            'status' => 'sometimes|in:pendente,concluído,cancelado',
-            'observacoes' => 'nullable|string',
-        ]);
 
-        $agendamento->update($request->all());
-
-        return response()->json($agendamento);
-    }
-
-    public function destroy($id)
-    {
-        $agendamento = AgendamentoDeVacina::findOrFail($id);
-        $agendamento->delete();
-
-        return response()->json(null, 204);
-    }
-
-public function relatorioAtrasadas()
+public function show(ShowAgendamentoDeVacinaService $service, AgendamentoDeVacina $agendamento_de_vacina)
 {
-    $agendamentos = AgendamentoDeVacina::where('data_agendada', '<', now())
-        ->where('status', 'pendente') // apenas os que ainda não foram realizados
-        ->with(['pet', 'vacina'])
-        ->get();
+    $agendamento = $service->run($agendamento_de_vacina);
+    return new AgendamentoDeVacinaResource($agendamento);
+}
+
+public function update(UpdateAgendamentoDeVacinaRequest $request, UpdateAgendamentoDeVacinaService $service, AgendamentoDeVacina $agendamento_de_vacina)
+{
+    $data = $request->validated();
+    $agendamento = $service->run($data, $agendamento_de_vacina);
+    $agendamento->load('pet', 'vacina');
+    return new AgendamentoDeVacinaResource($agendamento);
+}
+
+
+
+public function destroy(DeleteAgendamentoDeVacinaService $service, AgendamentoDeVacina $agendamento_de_vacina)
+{
+    $service->run($agendamento_de_vacina);
+    return response()->json(null, 204);
+}
+
+
+public function relatorioAtrasadas(RelatorioAtrasadasService $service)
+{
+    $resultado = $service->run();
 
     return response()->json([
-        'total_atrasados' => $agendamentos->count(),
-        'agendamentos' => $agendamentos
+        'total_atrasados' => $resultado['total_atrasados'],
+        'agendamentos' => AgendamentoDeVacinaResource::collection($resultado['agendamentos']),
     ]);
 }
 }

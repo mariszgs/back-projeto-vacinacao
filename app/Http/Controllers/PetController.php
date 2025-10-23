@@ -2,86 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pet;
+use App\Http\Requests\Pet\StorePetRequest;
+use App\Http\Requests\Pet\UpdatePetRequest;
+use App\Http\Resources\PetResource;
+use App\Services\Pet\IndexPetService;
+use App\Services\Pet\ShowPetService;
+use App\Services\Pet\StorePetService;
+use App\Services\Pet\UpdatePetService;
+use App\Services\Pet\DeletePetService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Pet;
 
 class PetController extends Controller
 {
-    // Listar todos os pets
-    public function index(Request $request)
+    public function index(IndexPetService $service, Request $request)
     {
-        $limit = $request->get('limit', 10); // limite do paginate
-        $pets = Pet::paginate($limit);
+        $pets = $service->run($request);
+        return PetResource::collection($pets);
 
-        return response()->json([
-            'count' => count($pets->items()),
-            'items' => $pets->items()
-        ]);
     }
 
-    // Mostrar um pet específico
-    public function show($id)
+    public function show(Pet $pet, ShowPetService $service)
     {
-        $pet = Pet::with([
-            'vacinasAplicadas.vacina', // vacinas aplicadas
-            'agendamentos.vacina'      // vacinas a tomar / agendadas
-        ])->findOrFail($id);
-
-        return response()->json([
-            'id' => $pet->id,
-            'name' => $pet->name,
-            'species' => $pet->species,
-            'birthdate' => $pet->birthdate,
-            'vacinas_aplicadas' => $pet->vacinasAplicadas,
-            'vacinas_agendadas' => $pet->agendamentos
-        ]);
+        $pet = $service->run($pet);
+        return new PetResource($pet);
     }
 
-    // Criar um novo pet
-    public function store(Request $request)
+    public function store(StorePetRequest $request, StorePetService $service)
     {
-        $request->validate([
-            'name'      => 'required|string|max:255',
-            'species'   => 'nullable|string|max:100',
-            'breed'     => 'nullable|string|max:100',
-            'birthdate' => 'nullable|date',
-        ]);
-
-        $pet = Pet::create([
-            'user_id'   => Auth::id(),
-            'name'      => $request->name,
-            'species'   => $request->species,
-            'breed'     => $request->breed,
-            'birthdate' => $request->birthdate,
-        ]);
-
-        return response()->json($pet, 201);
+        $data = $request->validated();
+        $pet = $service->run($data);
+        return response(new PetResource($pet), 201);
     }
 
-    // Atualizar um pet existente
-    public function update(Request $request, $id)
+    public function update(UpdatePetRequest $request, Pet $pet, UpdatePetService $service)
     {
-        $pet = Pet::findOrFail($id); // removido filtro pelo user_id
-
-        $request->validate([
-            'name'      => 'sometimes|required|string|max:255',
-            'species'   => 'nullable|string|max:100',
-            'breed'     => 'nullable|string|max:100',
-            'birthdate' => 'nullable|date',
-        ]);
-
-        $pet->update($request->only(['name', 'species', 'breed', 'birthdate']));
-
-        return response()->json($pet);
+        $data = $request->validated();
+        $pet = $service->run($data, $pet);
+        return new PetResource($pet);
     }
 
-    // Deletar um pet
-    public function destroy($id)
+    public function destroy(Pet $pet, DeletePetService $service)
     {
-        $pet = Pet::findOrFail($id); // removido filtro pelo user_id
-        $pet->delete();
-
-        return response()->json(['message' => 'Pet excluído com sucesso!'], 200);
+        $service->run($pet);
+        return response()->json(['message' => 'Pet deletado com sucesso!'], 200);
     }
 }

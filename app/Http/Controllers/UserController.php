@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -18,39 +17,6 @@ class UserController extends Controller
         //
     }
     
-     public function show(Request $request)
-    {
-        // Retorna dados do usuário autenticado (exclui senha)
-        return response()->json($request->user());
-    }
-
-    public function update(Request $request)
-    {
-        $user = $request->user();
-
-        // Validação simples
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users')->ignore($user->id),
-            ],
-            'password' => 'nullable|string|min:6|confirmed', // senha opcional, com confirmação
-        ]);
-
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        }
-
-        $user->save();
-
-        return response()->json(['message' => 'Perfil atualizado com sucesso!', 'user' => $user]);
-    }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -60,10 +26,45 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Display the specified resource.
      */
-    public function destroy(string $id)
+    public function show()
     {
-        //
+     return response()->json(Auth::user());
     }
+
+    //atualizar usuario
+      public function update(Request $request)
+    {
+        $user = $request->user(); // usuário logado
+
+        $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+            'password' => 'sometimes|min:6|confirmed',
+        ]);
+        if ($request->has('name')){
+            $user->name = $request->name;
+        }
+        if ($request->has('email')){
+            $user->email = $request->email;
+        }
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+        
+        $user->save();
+
+       return response()->json(['message' => 'Usuário atualizado!', 'user' => $user]);
+    }
+
+   
+    public function destroy()
+{
+    /** @var \App\Models\User $user */
+    $user = Auth::user();
+    $user->delete();
+
+    return response()->json(['message' => 'Conta excluída!']);
+}
 }

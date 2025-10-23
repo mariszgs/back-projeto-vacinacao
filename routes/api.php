@@ -12,14 +12,19 @@ use App\Http\Controllers\UserController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Rotas protegidas por Sanctum
-Route::middleware('auth:sanctum')->group(function () {
+    // Rotas protegidas por Sanctum
+    Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/user', [UserController::class, 'show']);      // Pega dados do usuário logado
     Route::put('/user', [UserController::class, 'update']);   // Atualiza dados do usuário logado
 
     
+    // Usuário autenticado
+    Route::get('/usuario', [UserController::class, 'show']);     // Ver dados
+    Route::put('/usuario', [UserController::class, 'update']);   // Atualizar dados
+    Route::delete('/usuario', [UserController::class, 'destroy']); // Excluir conta
+
     // Pets
     Route::apiResource('pets', PetController::class);
     

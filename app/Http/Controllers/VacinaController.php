@@ -1,96 +1,52 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Vacinas\StoreVacinaRequest;
+use App\Http\Requests\Vacinas\UpdateVacinaRequest;
+use App\Http\Resources\VacinaResource;
 use App\Models\Vacina;
+use App\Services\Vacina\IndexVacinaService;
+use App\Services\Vacina\ShowVacinaService;
+use App\Services\Vacina\StoreVacinaService;
+use App\Services\Vacina\UpdateVacinaService;
+use App\Services\Vacina\DeleteVacinaService;
 use Illuminate\Http\Request;
 
 class VacinaController extends Controller
 {
-    // LISTAR TODAS AS VACINAS
-    public function index(Request $request)
-    {
-        $limit = $request->get('limit', 10);
-        $vacinas = Vacina::paginate($limit);
 
-        return response()->json([
-            'count' => count($vacinas->items()),
-            'items' => $vacinas->items()
-        ]);
-    }
-
-    // MOSTRAR UMA VACINA ESPECÍFICA PELO ID
-    public function show($id)
-    {
-        $vacina = Vacina::findOrFail($id);
-        return response()->json($vacina);
-    }
-
-    // CRIAR UMA NOVA VACINA
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'descricao' => 'nullable|string',
-            'validade' => 'nullable|date', // <-- agora espera data
-        ]);
-
-        $vacina = Vacina::create([
-            'nome' => $request->nome,
-            'descricao' => $request->descricao,
-            'validade' => $request->validade, // <-- salva data
-        ]);
-
-        return response()->json($vacina, 201);
+    public function index(IndexVacinaService $service, Request $request)
+{
+    $vacinas = $service->run($request);
+    return VacinaResource::collection($vacinas);
 }
 
-    // ATUALIZAR UMA VACINA EXISTENTE
-    public function update(Request $request, $id)
+    public function show(int $id, ShowVacinaService $service)
     {
-        $vacina = Vacina::findOrFail($id);
-
-        $request->validate([
-            'nome' => 'sometimes|required|string|max:255',
-            'descricao' => 'nullable|string',
-            'validade' => 'nullable|date', // <-- agora data também
-        ]);
-
-        $vacina->update($request->only(['nome', 'descricao', 'validade']));
-
-        return response()->json($vacina);
+        $vacina = $service->run($id);
+        return new VacinaResource($vacina);
     }
 
-    // DELETAR UMA VACINA (soft delete)
-    public function destroy($id)
+    public function store(StoreVacinaRequest $request, StoreVacinaService $service)
     {
-        $vacina = Vacina::findOrFail($id);
-        $vacina->delete();
+        $data = $request->validated();
+        $vacina = $service->run($data);
 
-        return response()->json(['message' => 'Vacina excluída com sucesso (soft delete)!'], 200);
+        return response(new VacinaResource($vacina), 201);
     }
 
-    // LISTAR VACINAS EXCLUÍDAS
-    public function deleted()
+    public function update(StoreVacinaRequest $request, Vacina $vacina)
+{
+    $data = $request->validated();
+    $vacina->update($data);
+
+    return response(new VacinaResource($vacina), 200);
+}
+
+    public function destroy(DeleteVacinaService $service, Vacina $vacina)
     {
-        $vacinas = Vacina::onlyTrashed()->get();
-        return response()->json($vacinas);
-    }
-
-    // RESTAURAR VACINA
-    public function restore($id)
-    {
-        $vacina = Vacina::onlyTrashed()->findOrFail($id);
-        $vacina->restore();
-
-        return response()->json(['message' => 'Vacina restaurada com sucesso!', 'data' => $vacina]);
-    }
-
-    // EXCLUIR PERMANENTEMENTE
-    public function forceDelete($id)
-    {
-        $vacina = Vacina::onlyTrashed()->findOrFail($id);
-        $vacina->forceDelete();
-
-        return response()->json(['message' => 'Vacina excluída permanentemente!']);
+        $service->run($vacina);
+        return response()->json(null, 204);
     }
 }
