@@ -3,8 +3,8 @@
 namespace App\Services\Pet;
 
 use App\Models\Pet;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class IndexPetService
 {
