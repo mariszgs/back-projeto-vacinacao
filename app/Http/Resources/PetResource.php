@@ -17,3 +17,4 @@ class PetResource extends JsonResource
         ];
     }
 }
+    

@@ -39,9 +39,6 @@ Route::post('/login', [AuthController::class, 'login']);
 
     // Agendamento de vacinas - rota específica deve vir antes
     Route::get('/agendamentos-de-vacinas/relatorio-atrasadas', [AgendamentoDeVacinaController::class, 'relatorioAtrasadas']);
-Route::get('/agendamento-de-vacinas/{agendamento}', [AgendamentoDeVacinaController::class, 'show']);
-Route::put('/agendamento-de-vacinas/{agendamento}', [AgendamentoDeVacinaController::class, 'update']);
-Route::delete('/agendamento-de-vacinas/{agendamento}', [AgendamentoDeVacinaController::class, 'destroy']);
 
     // Agendamento de vacinas - rotas RESTful
     Route::apiResource('agendamento-de-vacinas', AgendamentoDeVacinaController::class);

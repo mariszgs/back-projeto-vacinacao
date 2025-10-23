@@ -22,8 +22,6 @@ class VacinaController extends Controller
     return VacinaResource::collection($vacinas);
 }
 
-
-
     public function show(int $id, ShowVacinaService $service)
     {
         $vacina = $service->run($id);
@@ -45,7 +43,6 @@ class VacinaController extends Controller
 
     return response(new VacinaResource($vacina), 200);
 }
-
 
     public function destroy(DeleteVacinaService $service, Vacina $vacina)
     {
