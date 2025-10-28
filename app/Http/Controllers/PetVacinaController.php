@@ -2,93 +2,64 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PetVacinas\StorePetVacinaRequest;
+use App\Http\Requests\PetVacinas\UpdatePetVacinaRequest;
+use App\Http\Resources\PetVacinaResource;
+use App\Services\PetVacina\IndexPetVacinaService;
+use App\Services\PetVacina\StorePetVacinaService;
+use App\Services\PetVacina\ShowPetVacinaService;
+use App\Services\PetVacina\UpdatePetVacinaService;
+use App\Services\PetVacina\DeletePetVacinaService;
 use App\Models\PetVacina;
 use Illuminate\Http\Request;
 
 class PetVacinaController extends Controller
 {
-    // Lista todas as vacinas aplicadas com paginação
-public function index(Request $request, $pet)
-{
-    $limit = $request->get('limit', 10);
+    public function index(
+        Request $request, 
+        int $pet, 
+        IndexPetVacinaService $service
+    ) {
+        $limit = $request->get('limit', 10);
+        $petVacinas = $service->run($pet, $limit);
 
-    $petVacinas = PetVacina::with('vacina:id,nome')
-        ->where('pet_id', $pet)
-        ->paginate($limit);
-
-    $items = collect($petVacinas->items())->map(function ($item) {
-        return [
-            'id' => $item->id,
-            'pet_id' => $item->pet_id,
-            'vacina_nome' => $item->vacina->nome ?? null,
-            'data_aplicacao' => $item->data_aplicacao,
-            'data_proxima_dose' => $item->data_proxima_dose,
-        ];
-    });
-
-    return response()->json([
-        'count' => $items->count(),
-        'items' => $items,
-        'total' => $petVacinas->total(),
-        'current_page' => $petVacinas->currentPage(),
-        'last_page' => $petVacinas->lastPage(),
-    ]);
-}
-
-
-
-    // Cria um novo registro de vacina aplicada a um pet
-   public function store(Request $request, $pet)
-{
-    $request->validate([
-        'vacina_id' => 'required|exists:vacinas,id',
-        'data_aplicacao' => 'required|date',
-        'data_proxima_dose' => 'nullable|date|after_or_equal:data_aplicacao',
-    ]);
-
-    $petVacina = PetVacina::create([
-        'pet_id' => $pet, 
-        'vacina_id' => $request->vacina_id,
-        'data_aplicacao' => $request->data_aplicacao,
-        'data_proxima_dose' => $request->data_proxima_dose,
-    ]);
-
-    return response()->json($petVacina, 201);
-}
-
-
-
-    
-    // Mostra um registro específico
-    public function show($id)
-    {
-        $petVacina = PetVacina::with(['pet', 'vacina'])->findOrFail($id);
-        return response()->json($petVacina);
+        return PetVacinaResource::collection($petVacinas);
     }
 
-    // Atualiza um registro existente
-    public function update(Request $request, $id)
-    {
-        $petVacina = PetVacina::findOrFail($id);
+    public function store(
+        StorePetVacinaRequest $request, 
+        int $pet, 
+        StorePetVacinaService $service
+    ) {
+        $data = $request->validated();
+        $petVacina = $service->run($data, $pet);
 
-        $request->validate([
-            'pet_id' => 'sometimes|exists:pets,id',
-            'vacina_id' => 'sometimes|exists:vacinas,id',
-            'data_aplicacao' => 'sometimes|date',
-            'data_proxima_dose' => 'nullable|date|after_or_equal:data_aplicacao',
-        ]);
-
-        $petVacina->update($request->all());
-
-        return response()->json($petVacina);
+        return response(new PetVacinaResource($petVacina), 201);
     }
 
-    // Remove um registro (soft delete)
-    public function destroy($id)
+    public function show(int $id, ShowPetVacinaService $service)
+    {
+        $petVacina = $service->run($id);
+        return new PetVacinaResource($petVacina);
+    }
+
+    public function update(
+        UpdatePetVacinaRequest $request, 
+        int $id, 
+        UpdatePetVacinaService $service
+    ) {
+        $data = $request->validated();
+        $petVacina = PetVacina::findOrFail($id);
+        $updatedPetVacina = $service->run($data, $petVacina);
+
+        return new PetVacinaResource($updatedPetVacina);
+    }
+
+    public function destroy(int $id, DeletePetVacinaService $service)
     {
         $petVacina = PetVacina::findOrFail($id);
-        $petVacina->delete();
+        $service->run($petVacina);
 
-        return response()->json(['message' => 'Registro removido (soft delete)!'], 200);
+        return response()->json(null, 204);
     }
 }
