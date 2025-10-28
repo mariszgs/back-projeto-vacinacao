@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PetVacinas\StorePetVacinaRequest;
-use App\Http\Requests\PetVacinas\UpdatePetVacinaRequest;
+use App\Http\Requests\PetVacina\StorePetVacinaRequest;
+use App\Http\Requests\PetVacina\UpdatePetVacinaRequest;
 use App\Http\Resources\PetVacinaResource;
 use App\Services\PetVacina\IndexPetVacinaService;
 use App\Services\PetVacina\StorePetVacinaService;

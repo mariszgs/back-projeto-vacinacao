@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Http\Requests\PetVacinas;
+namespace App\Http\Requests\PetVacina;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdatePetVacinaRequest extends FormRequest
 {
-    public function authorize()
-    {
-        return true;
-    }
 
     public function rules()
     {
