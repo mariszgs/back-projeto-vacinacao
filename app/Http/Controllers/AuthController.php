@@ -17,21 +17,16 @@ class AuthController extends Controller
     $user = $service->run($data);
     return response($user);
 }
-
-
     public function login(LoginRequest $request, LoginService $service)
     {
         $data = $request->validated();
-
         $response = $service->run($data);
-
         return response()->json($response);
     }
 
     public function logout(Request $request, LogoutService $service)
     {
         $response = $service->run($request);
-
         return response()->json($response);
     }
 }

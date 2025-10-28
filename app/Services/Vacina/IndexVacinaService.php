@@ -12,7 +12,7 @@ class IndexVacinaService
     public function run(Request $request)
     {
         $limit = $request->get('limit', 10);
-        // aqui pode incluir filtros, ordenação etc. se quiser
+        // aqui pode incluir filtros, ordenação se quiser
         return Vacina::paginate($limit);
     }
 }
