@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Users\UpdateUserRequest;
+use App\Http\Resources\UserResource;
+use App\Services\User\UpdateUserService;
+use App\Services\User\DeleteUserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -30,43 +33,27 @@ class UserController extends Controller
      */
     public function show()
     {
-     return response()->json(Auth::user());
+        $user = Auth::user();
+        return new UserResource($user);
     }
 
     //atualizar usuario
-      public function update(Request $request)
+      public function update(UpdateUserRequest $request, UpdateUserService $service)
     {
-        $user = $request->user(); // usuário logado
-
-        $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:users,email,' . $user->id,
-            'password' => 'sometimes|min:6|confirmed',
-        ]);
-        if ($request->has('name')){
-            $user->name = $request->name;
-        }
-        if ($request->has('email')){
-            $user->email = $request->email;
-        }
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        }
-        
-        $user->save();
-
-       return response()->json(['message' => 'Usuário atualizado!', 'user' => $user]);
+        $data = $request->validated();
+        $user = $request->user();
+        $updatedUser = $service->run($data, $user);
+        return new UserResource($updatedUser);
     }
 
    
-    public function destroy()
-{
-    /** @var \App\Models\User $user */
-    $user = Auth::user();
-    $user->delete();
+ public function destroy(DeleteUserService $service)
+    {
+        $user = Auth::user();
+        $service->run($user);
 
-    return response()->json(['message' => 'Conta excluída!']);
-}
+        return response()->json(null, 204);
+    }
 
 
 }
