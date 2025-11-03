@@ -1,7 +1,4 @@
 <?php 
-
-
-
 namespace App\Services\Vacina;
 
 use App\Models\Vacina;
@@ -11,9 +8,8 @@ class IndexVacinaService
 {
     public function run(Request $request)
     {
-        $limit = $request->get('limit', 10);
-        // aqui pode incluir filtros, ordenação se quiser
-        return Vacina::paginate($limit);
+        $perPage = $request->get('per_page', 10); // mudei de limit pra per_page
+        return Vacina::orderBy('created_at')->paginate($perPage);
     }
 }
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Requests\Agendamento\StoreAgendamentoDeVacinaRequest;
-use App\Http\Requests\UpdateAgendamentoDeVacinaRequest;
+use App\Http\Requests\Agendamento\UpdateAgendamentoDeVacinaRequest;
 use App\Http\Resources\AgendamentoDeVacinaResource;
 use App\Services\AgendamentoDeVacina\StoreAgendamentoDeVacinaService;
 use App\Services\AgendamentoDeVacina\IndexAgendamentoDeVacinaService;

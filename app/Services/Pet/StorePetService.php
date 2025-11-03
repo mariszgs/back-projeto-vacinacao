@@ -9,7 +9,6 @@ class StorePetService
 {
     public function run(array $data)
     {
-        $data['user_id'] = Auth::id();
         return Pet::create($data);
     }
 }
