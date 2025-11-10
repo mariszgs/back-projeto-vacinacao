@@ -7,8 +7,11 @@ use App\Http\Controllers\VacinaController;
 use App\Http\Controllers\PetVacinaController;
 use App\Http\Controllers\AgendamentoDeVacinaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ConfiguracaoController;
 
 // Rotas públicas
+Route::get('/configuracoes', [ConfiguracaoController::class, 'index']);
+Route::post('/configuracoes', [ConfiguracaoController::class, 'updateOrCreate']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
