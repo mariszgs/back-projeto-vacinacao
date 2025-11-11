@@ -10,7 +10,8 @@ class IndexPetService
 {
     public function run(Request $request)
     {
-        $perPage = $request->get('per_page', 10); // Mudei de 'limit' para 'per_page'
-        return Pet::paginate($perPage);
+        $per_page = $request->query('per_page', 10);
+        return Pet::where('user_id', Auth::id())->paginate($per_page);
+
     }
 }

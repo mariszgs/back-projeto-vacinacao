@@ -37,7 +37,7 @@ class PetVacinaController extends Controller
         return response(new PetVacinaResource($petVacina), 201);
     }
 
-    public function show(int $id, ShowPetVacinaService $service)
+    public function show(int $id, ShowPetVacinaService $service)    
     {
         $petVacina = $service->run($id);
         return new PetVacinaResource($petVacina);

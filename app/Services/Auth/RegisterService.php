@@ -9,7 +9,7 @@ class RegisterService
 {
     public function run(array $data)
     {
-        // Criar usuário
+    
         $user = User::create([
             'name'     => $data['name'],
             'email'    => $data['email'],
@@ -19,7 +19,6 @@ class RegisterService
         // Criar token de autenticação
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Retornar dados que o controller vai enviar na resposta
         return [
             'user' => $user,
             'access_token' => $token,
